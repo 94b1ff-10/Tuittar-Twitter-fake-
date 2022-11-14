@@ -35,11 +35,7 @@ class ComposeTweetController: UIViewController {
             let alert = UIAlertController(title: "Fill in the blanks.", message: "", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             self.present(alert, animated: true, completion: nil)
-        } else if bodyTextField.text.count > 140 {
-            let alert = UIAlertController(title: "Characters must 140 or less.", message: "\(bodyTextField.text.count) now.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            self.present(alert, animated: true, completion: nil)
-        } else {
+        } else if validate(text: bodyTextField.text) {
             let tweetData = TweetDataModel()
             let realm = try! Realm()
             try! realm.write {
@@ -49,7 +45,21 @@ class ComposeTweetController: UIViewController {
                 realm.add(tweetData)
                 self.dismiss(animated: true, completion: nil)
             }
+        } else {
+            let alert = UIAlertController(title: "Characters must 140 or less.", message: "\(bodyTextField.text.count) now.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(alert, animated: true, completion: nil)
         }
+    }
+    
+    func validate(text: String) -> Bool {
+        // textが140より多い場合false, 以下だったらtrue
+//        if text.count > 140 {
+//            return false
+//        } else {
+//            return true
+//        }
+        return text.count <= 140
     }
     
     // Configure TextView
